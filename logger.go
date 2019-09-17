@@ -155,49 +155,49 @@ func WithHash(key string, value interface{}) Logger {
 }
 
 func Debug(args ...interface{}) {
-	_globalLogger.Debug(args...)
+	_globalLogger.Debug(args)
 }
 func Info(args ...interface{}) {
-	_globalLogger.Info(args...)
+	_globalLogger.Info(args)
 }
 func Error(args ...interface{}) {
-	_globalLogger.Error(args...)
+	_globalLogger.Error(args)
 }
 func Warn(args ...interface{}) {
-	_globalLogger.Warn(args...)
+	_globalLogger.Warn(args)
 }
 func Fatal(args ...interface{}) {
-	_globalLogger.Fatal(args...)
+	_globalLogger.Fatal(args)
 }
 
 func Debugf(t string, args ...interface{}) {
-	_globalLogger.Debugf(t, args...)
+	_globalLogger.Debugf("["+t+"]", args...)
 }
 func Infof(t string, args ...interface{}) {
-	_globalLogger.Infof(t, args...)
+	_globalLogger.Infof("["+t+"]", args...)
 }
 func Errorf(t string, args ...interface{}) {
-	_globalLogger.Errorf(t, args...)
+	_globalLogger.Errorf("["+t+"]", args...)
 }
 func Warnf(t string, args ...interface{}) {
-	_globalLogger.Warnf(t, args...)
+	_globalLogger.Warnf("["+t+"]", args...)
 }
 func Fatalf(t string, args ...interface{}) {
-	_globalLogger.Fatalf(t, args...)
+	_globalLogger.Fatalf("["+t+"]", args...)
 }
 
 func Debugw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Debugw(msg, keysAndValues...)
+	_globalLogger.Debugw("["+msg+"]", keysAndValues...)
 }
 func Infow(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Infow(msg, keysAndValues...)
+	_globalLogger.Infow("["+msg+"]", keysAndValues...)
 }
 func Warnw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Warnw(msg, keysAndValues...)
+	_globalLogger.Warnw("["+msg+"]", keysAndValues...)
 }
 func Errorw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Errorw(msg, keysAndValues...)
+	_globalLogger.Errorw("["+msg+"]", keysAndValues...)
 }
 func Faterw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Fatalw(msg, keysAndValues...)
+	_globalLogger.Fatalw("["+msg+"]", keysAndValues...)
 }
