@@ -168,6 +168,7 @@ func With(key string, value interface{}) Logger {
 	n.SugaredLogger = _globalLogger.SugaredLogger.With(key, value)
 	return n
 }
+
 func WithHash(key string, value interface{}) Logger {
 	if _globalLogger.hasher == nil {
 		return _globalLogger
@@ -178,50 +179,98 @@ func WithHash(key string, value interface{}) Logger {
 	return n
 }
 
+func (l Logger) Debug(args ...interface{}) {
+	l.SugaredLogger.Debug(args...)
+}
+func (l Logger) Info(args ...interface{}) {
+	l.SugaredLogger.Info(args...)
+}
+func (l Logger) Error(args ...interface{}) {
+	l.SugaredLogger.Error(args...)
+}
+func (l Logger) Warn(args ...interface{}) {
+	l.SugaredLogger.Warn(args...)
+}
+func (l Logger) Fatal(args ...interface{}) {
+	l.SugaredLogger.Fatal(args...)
+}
+
+func (l Logger) Debugf(t string, args ...interface{}) {
+	l.SugaredLogger.Debugf(t, args...)
+}
+func (l Logger) Infof(t string, args ...interface{}) {
+	l.SugaredLogger.Infof(t, args...)
+}
+func (l Logger) Errorf(t string, args ...interface{}) {
+	l.SugaredLogger.Errorf(t, args...)
+}
+func (l Logger) Warnf(t string, args ...interface{}) {
+	l.SugaredLogger.Warnf(t, args...)
+}
+func (l Logger) Fatalf(t string, args ...interface{}) {
+	l.SugaredLogger.Fatalf(t, args...)
+}
+
+func (l Logger) Debugw(msg string, keysAndValues ...interface{}) {
+	l.SugaredLogger.Debugw(msg, keysAndValues...)
+}
+func (l Logger) Infow(msg string, keysAndValues ...interface{}) {
+	l.SugaredLogger.Infow(msg, keysAndValues...)
+}
+func (l Logger) Warnw(msg string, keysAndValues ...interface{}) {
+	l.SugaredLogger.Warnw(msg, keysAndValues...)
+}
+func (l Logger) Errorw(msg string, keysAndValues ...interface{}) {
+	l.SugaredLogger.Errorw(msg, keysAndValues...)
+}
+func (l Logger) Faterw(msg string, keysAndValues ...interface{}) {
+	l.SugaredLogger.Fatalw(msg, keysAndValues...)
+}
+
 func Debug(args ...interface{}) {
-	_globalLogger.Debug(args...)
+	_globalLogger.SugaredLogger.Debug(args...)
 }
 func Info(args ...interface{}) {
-	_globalLogger.Info(args...)
+	_globalLogger.SugaredLogger.Info(args...)
 }
 func Error(args ...interface{}) {
-	_globalLogger.Error(args...)
+	_globalLogger.SugaredLogger.Error(args...)
 }
 func Warn(args ...interface{}) {
-	_globalLogger.Warn(args...)
+	_globalLogger.SugaredLogger.Warn(args...)
 }
 func Fatal(args ...interface{}) {
-	_globalLogger.Fatal(args...)
+	_globalLogger.SugaredLogger.Fatal(args...)
 }
 
 func Debugf(t string, args ...interface{}) {
-	_globalLogger.Debugf(t, args...)
+	_globalLogger.SugaredLogger.Debugf(t, args...)
 }
 func Infof(t string, args ...interface{}) {
-	_globalLogger.Infof(t, args...)
+	_globalLogger.SugaredLogger.Infof(t, args...)
 }
 func Errorf(t string, args ...interface{}) {
-	_globalLogger.Errorf(t, args...)
+	_globalLogger.SugaredLogger.Errorf(t, args...)
 }
 func Warnf(t string, args ...interface{}) {
-	_globalLogger.Warnf(t, args...)
+	_globalLogger.SugaredLogger.Warnf(t, args...)
 }
 func Fatalf(t string, args ...interface{}) {
-	_globalLogger.Fatalf(t, args...)
+	_globalLogger.SugaredLogger.Fatalf(t, args...)
 }
 
 func Debugw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Debugw(msg, keysAndValues...)
+	_globalLogger.SugaredLogger.Debugw(msg, keysAndValues...)
 }
 func Infow(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Infow(msg, keysAndValues...)
+	_globalLogger.SugaredLogger.Infow(msg, keysAndValues...)
 }
 func Warnw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Warnw(msg, keysAndValues...)
+	_globalLogger.SugaredLogger.Warnw(msg, keysAndValues...)
 }
 func Errorw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Errorw(msg, keysAndValues...)
+	_globalLogger.SugaredLogger.Errorw(msg, keysAndValues...)
 }
 func Faterw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Fatalw(msg, keysAndValues...)
+	_globalLogger.SugaredLogger.Fatalw(msg, keysAndValues...)
 }
