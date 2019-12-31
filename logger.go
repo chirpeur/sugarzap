@@ -142,7 +142,12 @@ func WithOptions(opts ...Option) Logger {
 		log.Fatal(err)
 	}
 
-	zapL = zapL.WithOptions(zap.AddStacktrace(zapcore.FatalLevel), zap.AddCaller(), zap.AddCallerSkip(l.callerSkip))
+	callerSkip := 1
+	if l.callerSkip != 0 {
+		callerSkip = l.callerSkip
+	}
+
+	zapL = zapL.WithOptions(zap.AddStacktrace(zapcore.FatalLevel), zap.AddCaller(), zap.AddCallerSkip(callerSkip))
 	l.SugaredLogger = zapL.Sugar()
 	if l.replaceGlobals {
 		zap.ReplaceGlobals(zapL)
@@ -152,15 +157,15 @@ func WithOptions(opts ...Option) Logger {
 }
 
 func init() {
-	WithOptions(ReplaceGlobals(), AddCallerSkip(1))
+	WithOptions(ReplaceGlobals())
 }
 
 func JsonGlobalLogger() {
-	WithOptions(ReplaceGlobals(), AddCallerSkip(1), FormatJson())
+	WithOptions(ReplaceGlobals(), FormatJson())
 }
 
 func ConsoleGlobalLogger() {
-	WithOptions(ReplaceGlobals(), AddCallerSkip(1), FormatConsole())
+	WithOptions(ReplaceGlobals(), FormatConsole())
 }
 
 func With(key string, value interface{}) Logger {
