@@ -43,10 +43,23 @@ type Logger struct {
 	replaceGlobals bool
 	hasher         Hasher
 	callerSkip     int
+	format         string
 }
 
 func SetGlobalHasher(h Hasher) {
 	_globalHasher = h
+}
+
+func FormatJson() Option {
+	return optionFunc(func(log *Logger) {
+		log.format = "json"
+	})
+}
+
+func FormatConsole() Option {
+	return optionFunc(func(log *Logger) {
+		log.format = "console"
+	})
 }
 
 func AddCallerSkip(skip int) Option {
@@ -100,10 +113,10 @@ func WithOptions(opts ...Option) Logger {
 	}
 
 	c := zap.Config{
-		Encoding:    "console",
-		Level:       zap.NewAtomicLevelAt(zapcore.InfoLevel),
-		OutputPaths: []string{"stdout"},
-		//EncoderConfig: zap.NewProductionEncoderConfig(),
+		Encoding:          "json",
+		Level:             zap.NewAtomicLevelAt(zapcore.InfoLevel),
+		OutputPaths:       []string{"stdout"},
+		DisableStacktrace: true,
 		EncoderConfig: zapcore.EncoderConfig{
 			NameKey:        "logger",
 			CallerKey:      "caller",
@@ -118,6 +131,9 @@ func WithOptions(opts ...Option) Logger {
 			EncodeCaller:   zapcore.ShortCallerEncoder,
 		},
 	}
+	if l.format != "" {
+		c.Encoding = l.format
+	}
 	if l.config != nil {
 		c = *l.config
 	}
@@ -126,7 +142,7 @@ func WithOptions(opts ...Option) Logger {
 		log.Fatal(err)
 	}
 
-	zapL = zapL.WithOptions(zap.AddStacktrace(zapcore.ErrorLevel), zap.AddCaller(), zap.AddCallerSkip(l.callerSkip))
+	zapL = zapL.WithOptions(zap.AddStacktrace(zapcore.FatalLevel), zap.AddCaller(), zap.AddCallerSkip(l.callerSkip))
 	l.SugaredLogger = zapL.Sugar()
 	if l.replaceGlobals {
 		zap.ReplaceGlobals(zapL)
@@ -137,6 +153,14 @@ func WithOptions(opts ...Option) Logger {
 
 func init() {
 	WithOptions(ReplaceGlobals(), AddCallerSkip(1))
+}
+
+func JsonGlobalLogger() {
+	WithOptions(ReplaceGlobals(), AddCallerSkip(1), FormatJson())
+}
+
+func ConsoleGlobalLogger() {
+	WithOptions(ReplaceGlobals(), AddCallerSkip(1), FormatConsole())
 }
 
 func With(key string, value interface{}) Logger {
@@ -155,49 +179,49 @@ func WithHash(key string, value interface{}) Logger {
 }
 
 func Debug(args ...interface{}) {
-	_globalLogger.Debug(args)
+	_globalLogger.Debug(args...)
 }
 func Info(args ...interface{}) {
-	_globalLogger.Info(args)
+	_globalLogger.Info(args...)
 }
 func Error(args ...interface{}) {
-	_globalLogger.Error(args)
+	_globalLogger.Error(args...)
 }
 func Warn(args ...interface{}) {
-	_globalLogger.Warn(args)
+	_globalLogger.Warn(args...)
 }
 func Fatal(args ...interface{}) {
-	_globalLogger.Fatal(args)
+	_globalLogger.Fatal(args...)
 }
 
 func Debugf(t string, args ...interface{}) {
-	_globalLogger.Debugf("["+t+"]", args...)
+	_globalLogger.Debugf(t, args...)
 }
 func Infof(t string, args ...interface{}) {
-	_globalLogger.Infof("["+t+"]", args...)
+	_globalLogger.Infof(t, args...)
 }
 func Errorf(t string, args ...interface{}) {
-	_globalLogger.Errorf("["+t+"]", args...)
+	_globalLogger.Errorf(t, args...)
 }
 func Warnf(t string, args ...interface{}) {
-	_globalLogger.Warnf("["+t+"]", args...)
+	_globalLogger.Warnf(t, args...)
 }
 func Fatalf(t string, args ...interface{}) {
-	_globalLogger.Fatalf("["+t+"]", args...)
+	_globalLogger.Fatalf(t, args...)
 }
 
 func Debugw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Debugw("["+msg+"]", keysAndValues...)
+	_globalLogger.Debugw(msg, keysAndValues...)
 }
 func Infow(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Infow("["+msg+"]", keysAndValues...)
+	_globalLogger.Infow(msg, keysAndValues...)
 }
 func Warnw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Warnw("["+msg+"]", keysAndValues...)
+	_globalLogger.Warnw(msg, keysAndValues...)
 }
 func Errorw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Errorw("["+msg+"]", keysAndValues...)
+	_globalLogger.Errorw(msg, keysAndValues...)
 }
 func Faterw(msg string, keysAndValues ...interface{}) {
-	_globalLogger.Fatalw("["+msg+"]", keysAndValues...)
+	_globalLogger.Fatalw(msg, keysAndValues...)
 }
