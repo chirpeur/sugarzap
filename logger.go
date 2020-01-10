@@ -92,6 +92,10 @@ func (l Logger) With(key string, value interface{}) Logger {
 	return n
 }
 
+func (l Logger) Kind(value interface{}) Logger {
+	return l.With("kind", value)
+}
+
 func (l Logger) WithHash(key string, value interface{}) Logger {
 	h := _globalHasher
 	if l.hasher != nil {
@@ -172,6 +176,10 @@ func With(key string, value interface{}) Logger {
 	n := _globalLogger
 	n.SugaredLogger = _globalLogger.SugaredLogger.With(key, value)
 	return n
+}
+
+func Kind(value interface{}) Logger {
+	return With("kind", value)
 }
 
 func WithHash(key string, value interface{}) Logger {
