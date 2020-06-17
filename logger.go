@@ -14,6 +14,7 @@ package sugarzap
 
 import (
 	"log"
+	"os"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -110,6 +111,55 @@ func (l Logger) WithHash(key string, value interface{}) Logger {
 	return n
 }
 
+func AdvanceWithOptions(opts ...Option) Logger {
+	l := &Logger{}
+	for _, opt := range opts {
+		opt.apply(l)
+	}
+	callerSkip := 1
+	if l.callerSkip != 0 {
+		callerSkip = l.callerSkip
+	}
+	config := zapcore.EncoderConfig{
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		StacktraceKey:  "stacktrace",
+		MessageKey:     "msg",
+		LevelKey:       "level",
+		TimeKey:        "time",
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    zapcore.LowercaseLevelEncoder,
+		EncodeDuration: zapcore.SecondsDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+	}
+	highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.ErrorLevel
+	})
+	lowPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl < zapcore.ErrorLevel
+	})
+
+	consoleDebugging := zapcore.Lock(os.Stdout)
+	consoleErrors := zapcore.Lock(os.Stderr)
+
+	consoleEncoder := zapcore.NewJSONEncoder(config)
+
+	core := zapcore.NewTee(
+		zapcore.NewCore(consoleEncoder, consoleErrors, highPriority),
+		zapcore.NewCore(consoleEncoder, consoleDebugging, lowPriority),
+	)
+
+	logger := zap.New(core, zap.AddStacktrace(zapcore.FatalLevel), zap.AddCaller(), zap.AddCallerSkip(callerSkip))
+
+	l.SugaredLogger = logger.Sugar()
+	if l.replaceGlobals {
+		zap.ReplaceGlobals(logger)
+		_globalLogger = *l
+	}
+	return *l
+}
+
 func WithOptions(opts ...Option) Logger {
 	l := &Logger{}
 	for _, opt := range opts {
@@ -161,7 +211,8 @@ func WithOptions(opts ...Option) Logger {
 }
 
 func init() {
-	WithOptions(ReplaceGlobals())
+	AdvanceWithOptions(ReplaceGlobals())
+	//WithOptions(ReplaceGlobals())
 }
 
 func JsonGlobalLogger() {
